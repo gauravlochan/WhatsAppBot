@@ -61,7 +61,8 @@ async function handleCommand(message, client) {
 // Initialize command registry
 loadCommands();
 
+// Export both the commands Map and the handler
 module.exports = {
   handleCommand,
-  getCommands: () => commands
+  commands
 };
