@@ -19,7 +19,6 @@ async function initializeBot() {
       dataPath: SESSION_DATA_PATH
     }),
     puppeteer: {
-      executablePath: '/usr/bin/google-chrome-stable',
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
