@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const logger = require('../utils/logger');
+const { MessageMedia } = require('whatsapp-web.js');
 
 module.exports = {
   name: 'caption',
@@ -43,7 +44,7 @@ module.exports = {
       }
 
       logger.info('Media type:', media.mimetype);
-      logger.info('Media data length:', media.data.length);
+      logger.info('Media data size (KB):', (media.data.length * 0.75) / 1024);
 
       // Create a temporary file for the image
       const tempDir = os.tmpdir();
@@ -56,7 +57,9 @@ module.exports = {
       fs.writeFileSync(inputPath, imageBuffer);
       logger.info('Image saved successfully');
 
-      logger.info('Getting image metadata...');
+      const stats = fs.statSync(inputPath);
+      logger.info('Written file size (KB):', stats.size / 1024);
+
       // Get image metadata
       const metadata = await sharp(inputPath).metadata();
       logger.info('Image metadata:', metadata);
@@ -90,20 +93,22 @@ module.exports = {
         .toFile(outputPath);
       logger.info('Image processed successfully');
 
-      logger.info('Reading processed image...');
-      // Send the modified image
+      // Read the processed image and log its size
       const processedImage = fs.readFileSync(outputPath);
-      logger.info('Sending processed image...');
+      logger.info('Processed image size (KB):', processedImage.length / 1024);
+      const base64Image = processedImage.toString('base64');
+      logger.info('Base64 image size (KB):', base64Image.length / 1024);
       
-      // Send as a new message with media
-      await message.getChat().then(chat => {
-        chat.sendMessage('Here\'s your captioned image!', {
-          media: {
-            mimetype: 'image/jpeg',
-            data: processedImage.toString('base64')
-          }
-        });
-      });
+      // Create MessageMedia object from the file
+      const chat = await message.getChat();
+      const mediaMessage = new MessageMedia(
+        'image/jpeg',
+        base64Image,
+        'captioned.jpg'
+      );
+      
+      logger.info('Sending media message...');
+      await chat.sendMessage(mediaMessage);
       logger.info('Image sent successfully');
 
       // Clean up temporary files
