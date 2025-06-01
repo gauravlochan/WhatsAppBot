@@ -19,6 +19,7 @@ async function initializeBot() {
       dataPath: SESSION_DATA_PATH
     }),
     puppeteer: {
+      headless: true,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -26,8 +27,19 @@ async function initializeBot() {
         '--disable-accelerated-2d-canvas',
         '--no-first-run',
         '--no-zygote',
-        '--disable-gpu'
-      ]
+        '--disable-gpu',
+        '--disable-extensions',
+        '--disable-default-apps',
+        '--disable-translate',
+        '--disable-sync',
+        '--disable-background-networking',
+        '--metrics-recording-only',
+        '--mute-audio',
+        '--no-default-browser-check',
+        '--safebrowsing-disable-auto-update',
+        '--js-flags=--max-old-space-size=512'
+      ],
+      executablePath: process.platform === 'darwin' ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : undefined
     }
   });
 
