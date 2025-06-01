@@ -24,32 +24,24 @@ async function initializeBot() {
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--disable-gpu',
-        '--disable-extensions',
-        '--disable-default-apps',
-        '--disable-translate',
-        '--disable-sync',
-        '--disable-background-networking',
-        '--metrics-recording-only',
-        '--mute-audio',
-        '--no-default-browser-check',
-        '--safebrowsing-disable-auto-update',
-        '--js-flags=--max-old-space-size=512'
+        '--disable-gpu'
       ],
-      executablePath: process.platform === 'darwin' ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : undefined
+      executablePath: process.platform === 'darwin' ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : undefined,
+      timeout: 60000 // Increase timeout to 60 seconds
     }
   });
 
   // Set up event listeners
   setupEventListeners();
   
-  // Initialize the client
-  await client.initialize();
-  
-  return client;
+  try {
+    // Initialize the client
+    await client.initialize();
+    return client;
+  } catch (error) {
+    logger.error('Failed to initialize WhatsApp client:', error);
+    throw error;
+  }
 }
 
 /**
