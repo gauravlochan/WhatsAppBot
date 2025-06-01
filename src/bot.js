@@ -3,6 +3,8 @@ const qrcode = require('qrcode-terminal');
 const logger = require('./utils/logger');
 const commandHandler = require('./commands');
 const { SESSION_DATA_PATH } = require('./config');
+const fs = require('fs');
+const path = require('path');
 
 let client;
 
@@ -13,10 +15,16 @@ let client;
 async function initializeBot() {
   logger.info('Initializing WhatsApp client...');
   
+  // Ensure session directory exists
+  if (!fs.existsSync(SESSION_DATA_PATH)) {
+    fs.mkdirSync(SESSION_DATA_PATH, { recursive: true });
+  }
+  
   // Create a new client instance
   client = new Client({
     authStrategy: new LocalAuth({
-      dataPath: SESSION_DATA_PATH
+      dataPath: SESSION_DATA_PATH,
+      clientId: 'whatsapp-bot'
     }),
     puppeteer: {
       headless: true,
