@@ -70,12 +70,13 @@ module.exports = {
           <style>
             .caption { 
               font-family: Arial;
-              font-size: 40px;
+              font-size: 80px;
               font-weight: bold;
               fill: white;
               stroke: black;
-              stroke-width: 2;
+              stroke-width: 4;
               text-anchor: middle;
+              dominant-baseline: middle;
             }
           </style>
           <text x="50%" y="90%" class="caption">${captionText}</text>
