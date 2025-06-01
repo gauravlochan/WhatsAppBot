@@ -6,6 +6,12 @@ const config = require('../config');
 // Command registry
 const commands = new Map();
 
+// Export the commands Map immediately
+module.exports = {
+  commands,
+  handleCommand: null // Will be set after loading commands
+};
+
 // Load command handlers
 function loadCommands() {
   const commandsDir = path.join(__dirname);
@@ -61,8 +67,5 @@ async function handleCommand(message, client) {
 // Initialize command registry
 loadCommands();
 
-// Export both the commands Map and the handler
-module.exports = {
-  handleCommand,
-  commands
-};
+// Set the handleCommand function after loading commands
+module.exports.handleCommand = handleCommand;
